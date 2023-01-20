@@ -1,0 +1,49 @@
+body{
+    background-color: #F5EBE0;
+}
+
+.hr-all{
+    border-color: #A0BCC2;
+    border-style: dotted none none none ;
+    border-width: 8px;
+    width: 12%;
+}
+
+.hr-education{
+    background-color: white;
+    border-style: none;
+    height: 2px;
+
+}
+
+img{
+
+    height: 300px;
+    width: 280px
+
+}
+
+.shifted{
+    margin-left: 35px;
+}
+.shifted_more{
+    margin-left: 55px;
+}
+.profile-link{
+    display: inline-block;
+}
+.table-spacing{
+    border-spacing: 10px;
+}
+.table-spacing-skills{
+    border-spacing: 20px;
+}
+.h2-text-color{
+    color:peru;
+}
+.h1-text-color{
+    color:darkslateblue;
+}
+.a-color{
+    color: saddlebrown;
+}
