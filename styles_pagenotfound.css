@@ -1,0 +1,61 @@
+
+body{
+    background-color: #F5EBE0;
+}
+
+.hr-all{
+    border-color: #A0BCC2;
+    border-style: dotted none none none ;
+    border-width: 8px;
+    width: 12%;
+}
+
+.h2-text-color{
+    color:peru;
+}
+
+.h1-text-color{
+    color:darkslateblue;
+}
+
+.a-color{
+    color: saddlebrown;
+}
+
+img{
+
+    height: 300px;
+    width: 280px
+
+}
+
+.table-spacing{
+    border-spacing: 20px;
+}   
+
+.table-spacing-homeworks{
+    border-collapse: collapse;
+    border-style: solid;
+    border-color: #85586F;
+    border-width: 5px;
+    margin-left: 300px;
+}
+
+.td-homeworks{
+    border-style: solid;
+    border-color: #85586F;
+    text-align: center;
+    vertical-align: middle;
+    height:40px;
+    width: 400px
+}
+
+    .td-homeworks:hover{
+        background-color: #DEB6AB;
+    }
+
+.quote{
+    margin-left: 750px;
+    margin-top: 55px;
+}
+
