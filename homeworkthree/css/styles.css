@@ -38,7 +38,6 @@ body{
     margin-left: 355px;
     border-spacing: 8px 4px;
     border-collapse: separate;
-    top: 10px;
 }
 
 .table-social-media{
@@ -89,6 +88,7 @@ body{
     font-size: 30px;
     margin-top: 57px;
     margin-left: 365px;
+    margin-bottom: 0px;
     
 }
 
