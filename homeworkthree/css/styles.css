@@ -1,0 +1,117 @@
+/* #################################################Class Selectors ######################################################### */
+/* td{
+    width: 25%;
+} */
+
+a{
+    text-decoration: none;
+    color: grey;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+}
+body{
+    background-color: #F7FBFC;
+}
+
+
+
+/* #################################################Class Selectors ######################################################### */
+.table-heading{
+    margin-top: 30px;
+    margin-left: 400px;
+    border-collapse: separate;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    height: 140px;
+    width: 670px;
+}
+
+.table-home-images{
+    margin-top: 91px;
+    margin-left: 355px;
+    border-spacing: 8px 4px;
+    border-collapse: separate;
+}
+
+.table-nature-images{
+    margin-top: 0px;
+    margin-left: 355px;
+    border-spacing: 8px 4px;
+    border-collapse: separate;
+    top: 10px;
+}
+
+.table-social-media{
+    margin-top: 20px;
+    margin-left: 695px;
+    border-spacing: 15px 4px;
+    border-collapse: separate;
+}
+
+.td-artist-name{
+    text-align:center;
+    vertical-align:bottom;
+    font-size: 60px;
+    font-family: 'bienetresocial-regular';
+
+}
+
+.td-links{
+    height:50px;
+    width:500px;
+    text-align: center;
+    vertical-align:top;
+    font-size:smaller;
+}
+
+/* .td-images-row1{
+    border-style: dashed;
+    border-color: chartreuse;
+}
+
+.td-images-row2{
+    border-style: dashed;
+    border-color: red;
+} */
+
+
+.p-copyright{
+    color: #434242;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 8px;
+    margin-top: 34px;
+    margin-left: 708px ;
+}
+
+.p-nature-heading{
+    color: #181818;
+    font-family:'Noto Serif';
+    font-size: 30px;
+    margin-top: 57px;
+    margin-left: 365px;
+    
+}
+
+.img-social-media{
+    width: 16px;
+    height: 16px;
+}
+
+.img-home-images{
+    width: 374px;
+    height: 374px;
+}
+
+a:hover{
+    color: black
+}
+
+
+/* ################################################# Id Selectors ######################################################### */
+#home{
+    color: black
+}
+
+#nature{
+    color: black
+}
