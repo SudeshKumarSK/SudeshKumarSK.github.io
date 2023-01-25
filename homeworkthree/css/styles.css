@@ -9,15 +9,17 @@ a{
     font-family:Georgia, 'Times New Roman', Times, serif;
 }
 body{
-    background-color: #F7FBFC;
+    background-color: white;
 }
-
+div{
+    width: 786px;
+    margin: auto;
+}
 
 
 /* #################################################Class Selectors ######################################################### */
 .table-heading{
-    margin-top: 30px;
-    margin-left: 400px;
+    margin: 30px auto;
     border-collapse: separate;
     border-style: solid;
     border-width: 1px;
@@ -27,22 +29,33 @@ body{
 }
 
 .table-home-images{
-    margin-top: 91px;
-    margin-left: 355px;
+    margin: 91px auto 0px auto;
     border-spacing: 8px 4px;
     border-collapse: separate;
 }
 
+.table-nature-text{
+    margin: 57px auto 0px 10px;
+    color: #181818;
+    font-family:'Noto Serif';
+    font-size: 30px;
+    
+}
 .table-nature-images{
-    margin-top: 0px;
-    margin-left: 355px;
+    margin: 0px auto 0px auto;
     border-spacing: 8px 4px;
     border-collapse: separate;
 }
 
+.table-copyright{
+    margin: 15px auto 0px auto;
+    border-collapse: separate;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 8px;
+    color: #434242;
+}
 .table-social-media{
-    margin-top: 20px;
-    margin-left: 695px;
+    margin: 15px auto;
     border-spacing: 15px 4px;
     border-collapse: separate;
 }
@@ -52,7 +65,6 @@ body{
     vertical-align:bottom;
     font-size: 60px;
     font-family: 'bienetresocial-regular';
-
 }
 
 .td-links{
@@ -63,24 +75,6 @@ body{
     font-size:smaller;
 }
 
-/* .td-images-row1{
-    border-style: dashed;
-    border-color: chartreuse;
-}
-
-.td-images-row2{
-    border-style: dashed;
-    border-color: red;
-} */
-
-
-.p-copyright{
-    color: #434242;
-    font-family:Georgia, 'Times New Roman', Times, serif;
-    font-size: 8px;
-    margin-top: 34px;
-    margin-left: 708px ;
-}
 
 .p-nature-heading{
     color: #181818;
