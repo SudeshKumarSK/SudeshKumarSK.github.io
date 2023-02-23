@@ -53,12 +53,16 @@ img{
     width: 400px
 }
 
-    .td-homeworks:hover{
-        background-color: #DEB6AB;
-    }
+.td-homeworks:hover{
+    background-color: #DEB6AB;
+}
 
 .quote{
     margin-left: 390px;
     margin-top: 20px;
 }
 
+.homework-link{
+    display: block;
+    
+}
