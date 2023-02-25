@@ -482,16 +482,18 @@ async function getEventDetails(id, eventName, genre){
         }
         
 
-        // Populating the left-container with Genres Details fetched from flask.
-        const leftContainerGenresHead = document.createElement("h3");
-        leftContainerGenresHead.innerHTML = "Genres";
-        leftContainer.appendChild(leftContainerGenresHead);
-
-        const leftContainerGenresContent = document.createElement("p");
         let genreString = generateGenreString(responseData, genre);
-        leftContainerGenresContent.innerHTML = genreString;
-        leftContainerGenresContent.classList.add("left-container-content-style");
-        leftContainer.appendChild(leftContainerGenresContent);
+        if(genreString){
+            // Populating the left-container with Genres Details fetched from flask.
+            const leftContainerGenresHead = document.createElement("h3");
+            leftContainerGenresHead.innerHTML = "Genres";
+            leftContainer.appendChild(leftContainerGenresHead);
+            const leftContainerGenresContent = document.createElement("p");
+            leftContainerGenresContent.innerHTML = genreString;
+            leftContainerGenresContent.classList.add("left-container-content-style");
+            leftContainer.appendChild(leftContainerGenresContent);
+
+        }
 
 
         // Populating the left-container with Ticket Status Details fetched from flask.
@@ -924,8 +926,8 @@ form.addEventListener('submit', async (event) => {
                         generateDynamicTable(data);
                         
                         // Adding an event listener to all the headers and sorting the table data based on the header.
-                        const headers = [...document.querySelectorAll('.th')];
-                        [].forEach.call(headers.slice(2), function (header, index) {
+                        const headers = document.querySelectorAll('.th');
+                        [].forEach.call(headers, function (header, index) {
                             header.addEventListener('click', function () {
                                 console.log("Header clicked");
                                 sortTable(index);
