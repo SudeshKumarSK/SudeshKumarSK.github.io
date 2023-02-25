@@ -4,7 +4,7 @@
     Web Tech CSCi - 571 Assignment -> 6
 '''
 #Importing all the necessary Libraries.
-from flask import Flask, request, render_template
+from flask import Flask, request
 from flask_cors import CORS
 import json
 import urllib
@@ -47,9 +47,9 @@ CORS(application)
 tm = TicketMaster(ticketMasterConfig)
 
 
-@application.route("/index", methods=["GET"])
+@application.route("/", methods=["GET"])
 def index():
-    return render_template("home.html")
+    return application.send_static_file("home.html")
 
 
 # Creating an endpoint called "/api/endpoint" to make a GET request and send the form-data as query parameters.
