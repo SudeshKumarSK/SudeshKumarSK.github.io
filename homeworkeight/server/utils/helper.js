@@ -4,6 +4,50 @@
 const axiosRequest = require("axios");
 const geohash = require("ngeohash");
 
+
+// Perform Autocomplete.
+const performAutocomplete = async(ticketMasterConfig, urlAddOns) => {
+    const response = {
+        "status" : false,
+        "data" : null
+    }
+
+    try {
+        const ticketMasterParams = {
+            "apikey" : ticketMasterConfig["ticketMasterParams"]["apikey"],
+            "keyword" : ticketMasterConfig["ticketMasterParams"]["keyword"]
+        }
+
+        const ticketMasterHeader = {
+            'Accept': 'application/json'
+        }
+        
+        // Making a get request to the /venues endpoint and passing the venue as parameter to get information about the venue.
+        const res = await axiosRequest.get(ticketMasterConfig["ticketMasterBaseUrl"] + urlAddOns, {
+            params: ticketMasterParams,
+            headers : ticketMasterHeader
+        })
+
+        const embedded = res["data"]["_embedded"];
+        const attractions = embedded["attractions"]
+
+        const attractionsList = [];
+        
+        for (const [index, attraction] of attractions.entries()){
+            attractionsList.push(attraction["name"]);
+        }
+
+        response["status"] = true;
+        response["data"] = attractionsList;
+
+        return response;
+
+    } catch (error) {
+        console.error(error);
+        return response;
+    }
+    
+}
 // getGeocoding() function makes a get request to the google's geocoding api and gets the latitude and longitude
 // of the location passed as query parameters.
 const getGeocoding = async(gcpBaseUrl, gcpParams) => {
@@ -23,6 +67,42 @@ const getGeocoding = async(gcpBaseUrl, gcpParams) => {
         response["geoHash"] = geohash.encode(gcpResponseData.geometry.location.lat, gcpResponseData.geometry.location.lng, 5);
         response["status"] = true;
 
+        return response;
+
+    } catch (error) {
+        console.error(error);
+        return response;
+    }
+}
+
+
+const getLatLng = async(fullLocation) => {
+
+    const gcp_API_KEY = "AIzaSyASYq8w8xkwuoTkczscmHr_qj0K2I9gz-4";
+    const gcpBaseUrl = "https://maps.googleapis.com/maps/api/geocode/json?";
+
+    const gcpParams = {
+    'key' : gcp_API_KEY
+    }
+    gcpParams["address"] = fullLocation
+
+
+    const response = {
+        "status" : false,
+        "lat" : null,
+        "lng" : null
+    }
+
+    try {
+        const res = await axiosRequest.get(gcpBaseUrl, {
+            params: gcpParams
+        })
+        gcpResponseData = res.data.results[0]
+        console.log("Received Latitude and Longitude from GCP for Venue Details!");
+        
+        response["status"] = true;
+        response.lat = gcpResponseData.geometry.location.lat;
+        response.lng = gcpResponseData.geometry.location.lng;
         return response;
 
     } catch (error) {
@@ -118,30 +198,30 @@ const eventSearch = async(ticketMasterConfig, urlAddOns) => {
     }
 
     
-
     try {
         // Making a get request to the events endpoint of the ticketmaster api.
         const res = await axiosRequest.get(ticketMasterConfig["ticketMasterBaseUrl"] + urlAddOns, {
             params: ticketMasterConfig["ticketMasterParams"],
             headers : ticketMasterConfig["ticketMasterHeader"]
         })
-
+        
         const embedded = res["data"]["_embedded"];
         const events = embedded["events"];
-        const result = {};
+        const result = [];
 
         for (const [index, event] of events.entries()){
             let currentEventJson = eventSearchHelper(event);
-            result[index] = currentEventJson;
+            result.push(currentEventJson);
         }
         
         response["status"] = true;
         response["data"] = result;
-
+        console.log("Results Were Found for Events Search Api!");
         return response;
 
     } catch (error) {
         console.error(error);
+        console.error("No Results Found for Events Search Api!");
         return response;
     }
     
@@ -190,10 +270,10 @@ const eventDetailsHelper = (jsonData) => {
     try {
         const embedded = jsonData["_embedded"]
         const attractions = embedded["attractions"]
-        const artistTeamData = {};
+        const artistTeamData = [];
         for (const [index, artist] of attractions.entries()){
             
-            artistTeamData[index] = artist["name"];
+            artistTeamData.push(artist["name"]);
         }
 
         currentEventJson["artist"] = artistTeamData;
@@ -379,13 +459,15 @@ const eventDetails = async(ticketMasterConfig, urlAddOns) => {
 
 
 // Helper function for the venueDetails() function.
-const venueDetailsHelper = (jsonData) => {
+const venueDetailsHelper = async(jsonData) => {
     // Response object which will be sent to the venueDetails() function.
     currentVenueJson = {
         "address" : {
             "line1" : null,
             "city" : null,
-            "state" : null
+            "state" : null,
+            "lat": null,
+            "lng" : null
         }
     }
 
@@ -481,6 +563,29 @@ const venueDetailsHelper = (jsonData) => {
         currentVenueJson["childRule"] = null;
     }
 
+    // Storing the LAtitude and Longitude of the location in the response object.
+    try {
+        let fullLocation = ""
+        if (currentVenueJson["address"]["line1"] || null){
+            fullLocation += currentVenueJson["address"]["line1"] + ", ";
+        }
+        if (currentVenueJson.address.city || null){
+                fullLocation+= currentVenueJson.address.city + ", ";
+        }
+        if(currentVenueJson.address.state || null){
+                fullLocation+= currentVenueJson.address.state;
+        }
+        const encodedFullLocation = fullLocation.replace(/\s+/g, '+');
+        console.log(encodedFullLocation);
+
+        const geoCodingResp = await getLatLng(fullLocation)
+
+        currentVenueJson.address.lat = geoCodingResp.lat
+        currentVenueJson.address.lng = geoCodingResp.lng
+    } catch (error) {
+        console.error(error);
+        
+    }
     return currentVenueJson;
 }
 
@@ -511,7 +616,7 @@ const venueDetails = async(ticketMasterConfig, urlAddOns) => {
             headers : ticketMasterHeader
         })
 
-        const currentVenueDetails = venueDetailsHelper(res["data"]);
+        const currentVenueDetails = await venueDetailsHelper(res["data"]);
 
         response["status"] = true;
         response["data"] = currentVenueDetails;
@@ -587,10 +692,10 @@ const spotifyHelper = async(artistName, spotifyApi) => {
                 const artistId = item["id"];
                 await spotifyApi.getArtistAlbums(artistId,{ limit: 3})
                 .then((data) => {
-                    const albumCover = {};
+                    const albumCover = [];
                     const albums = data.body.items;
                     for (const [index, album] of albums.entries()){
-                        albumCover[index] = album["images"][1]["url"];
+                        albumCover.push(album["images"][1]["url"]);
                     }
                     spotifyResponse["data"]["albums"] = albumCover;
                 })
@@ -644,7 +749,10 @@ const artistDetailsHelper = async(attractions) => {
 const artistDetails = async(ticketMasterConfig,  urlAddOns, spotifyApi) => {
     const response = {
         "status" : false,
-        "data" : null
+        "data" : {
+            "musicFlag": false,
+            "data" : null
+        }
     }
 
     try {
@@ -663,8 +771,8 @@ const artistDetails = async(ticketMasterConfig,  urlAddOns, spotifyApi) => {
         })
 
         const segmentData = await artistDetailsHelper(res["data"]["_embedded"]["attractions"]);
-        console.log(segmentData);
-        const artistData = {};
+        
+        const artistData = [];
         index = 0
         await spotifyApi.clientCredentialsGrant()
         .then(async(data) => {
@@ -675,16 +783,22 @@ const artistDetails = async(ticketMasterConfig,  urlAddOns, spotifyApi) => {
             await spotifyApi.setAccessToken(data.body['access_token']);
             for (const key in segmentData){
                 if (segmentData[key] != "Music"){
-                    artistData[index] = {
-                        "musicFlag" : false,
-                        "data" : "No music related artist details to show"
-                    }
+                    artistData.push(
+                        "No music related artist details to show"
+                    )
+                    response["data"].musicFlag = false;
+                    break;
                 }
                 else{
                     const spotifyResponse = await spotifyHelper(key, spotifyApi)
-                    artistData[index] = {
-                        "musicFlag" : true,
-                        "data" :  spotifyResponse
+                    if(spotifyResponse.data.name){
+                        artistData.push(spotifyResponse.data)
+                        response["data"].musicFlag = true;
+                    }
+                    else{
+                        artistData.push("No music related artist details to show")
+                        response["data"].musicFlag = false;
+                        break;
                     }
                 }
                 index += 1;
@@ -695,7 +809,7 @@ const artistDetails = async(ticketMasterConfig,  urlAddOns, spotifyApi) => {
         })
 
         response["status"] = true;
-        response["data"] = artistData;
+        response["data"]["data"] = artistData;
 
         return response;
     } catch (error) {
@@ -707,6 +821,7 @@ const artistDetails = async(ticketMasterConfig,  urlAddOns, spotifyApi) => {
 }
 
 // Exporting all the functions to be used in the server.js file.
+exports.performAutocomplete = performAutocomplete;
 exports.getGeocoding = getGeocoding;
 exports.eventSearch = eventSearch;
 exports.eventDetails = eventDetails;

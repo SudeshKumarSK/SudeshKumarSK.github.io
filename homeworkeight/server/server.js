@@ -10,13 +10,16 @@ const express = require("express");
 const geohash = require("ngeohash");
 const SpotifyWebApi = require("spotify-web-api-node");
 const ticketmaster = require("./utils/helper");
-
+const cors = require("cors");
+const port = process.env.PORT || 3000;
 
 // Creating an instance for the express class().
 const app = express()
 
+app.use(cors());
+
 // Initializing API Key for GCP Geocoding API and base url for Google API.
-const gcp_API_KEY = "AIzaSyDKECWK_Ps6L5CBGMdUQBoLuHEch3HoIHw"
+const gcp_API_KEY = "AIzaSyASYq8w8xkwuoTkczscmHr_qj0K2I9gz-4"
 const gcpBaseUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
 const gcpParams = {
     'key' : gcp_API_KEY,
@@ -45,7 +48,35 @@ const spotifyConfig = {
     "clintSecret" : "89c5504084b747f78d41ebf0061532d2"
 };
 
+app.get("/api/autocomplete", async(req,res) => {
+    const response = {
+        "status" : false,
+        "data" : null
+        }
 
+    try{
+        const keyword = decodeURIComponent(req.query.keyword);
+        
+        ticketMasterConfig["ticketMasterParams"]["keyword"] = keyword;
+
+        const autocompleteResponse = await ticketmaster.performAutocomplete(ticketMasterConfig, "/suggest");
+        if (autocompleteResponse["status"]){
+            response["data"] = autocompleteResponse["data"];
+        }
+        else{
+            throw Error("Couldn't get suggestions for the keyword passed!");
+        }
+        
+        response["status"] = true;   
+        // console.log(res.json()); 
+        console.log(response["data"]);
+        return res.json(response);
+
+    }catch(error){
+        console.error(error);
+        return res.json(response);
+    }
+})  
 
 app.get("/api/eventsearch", async(req, res) => {
     const response = {
@@ -97,11 +128,13 @@ app.get("/api/eventsearch", async(req, res) => {
             
         }
 
-        response["status"] = true;    
+        response["status"] = true;   
+        console.log("Sent the response object to React Front-end!"); 
         return res.json(response);
 
     }catch(error){
         console.error(error);
+        console.error("Sent the response object from catch to React Front-end!"); 
         return res.json(response);
     }
 })
@@ -196,6 +229,6 @@ app.get("/api/artistDetails", async(req, res) => {
 
 
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log('Server started on port 3000!');
   });
