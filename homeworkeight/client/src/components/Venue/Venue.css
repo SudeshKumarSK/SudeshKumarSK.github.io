@@ -1,0 +1,33 @@
+.seat-map{
+    width: 300px;
+    height: 400px;
+}
+
+.event-details{
+    margin-top: 10px;
+}
+
+.details{
+    display: block;
+    margin-bottom: 0px;
+}
+
+.heading{
+    color: #27E1C1;
+    display: block;
+    margin-bottom: 0px;
+}
+
+.share{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.wrapper-icon{
+    display: inline-block;
+}
+
+.wrapper-text{
+    display: inline-block;
+    margin-bottom: 0px;
+}
