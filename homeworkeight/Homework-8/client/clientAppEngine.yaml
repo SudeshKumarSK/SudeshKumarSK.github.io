@@ -1,0 +1,15 @@
+runtime: python39
+service: default
+
+handlers:
+  - url: /static
+    static_dir: build/static
+
+  - url: /(.*\.html)
+    static_files: build/\1
+    upload: build/(.*\.html)
+    mime_type: text/html
+
+  - url: /(.*)
+    static_files: build/\1
+    upload: build/(.*)

@@ -71,6 +71,7 @@ interface ArtistDetails {
 interface EventCard {
   eventId: string | null;
   eventName: string | null;
+  eventDate: string | null;
 }
 
 // Form component.
@@ -123,7 +124,7 @@ const Form = () => {
 
     try {
       const autoCompleteResponse = await fetch(
-        `http://localhost:3000/api/autocomplete?keyword=${inputValue}`,
+        `/api/autocomplete?keyword=${inputValue}`,
         {
           method: "GET",
           mode: "cors",
@@ -189,8 +190,8 @@ const Form = () => {
       const encodedEventSearch = encodeURIComponent(
         JSON.stringify(eventSearch)
       );
-      const flaskApi = "http://localhost:3000";
-      const url = `${flaskApi}/api/eventsearch?data=${encodeURIComponent(
+      const nodeapi = "https://server-dot-webtech-hw-8.wl.r.appspot.com";
+      const url = `/api/eventsearch?data=${encodeURIComponent(
         encodedEventSearch
       )}`;
 
@@ -211,6 +212,7 @@ const Form = () => {
       if (jsonData["status"] == false || jsonData["data"] == null) {
         setShowTable(false);
         setShowNoResults(true);
+        setShowEventCard(false);
         console.log(
           "Successfully received response from /api/eventsearch for NO RESULTS FOUND!"
         );
@@ -246,6 +248,7 @@ const Form = () => {
       console.error("Failed to received response from /api/eventsearch");
       console.error("No Results Found for Events Search");
       setShowTable(false);
+      setShowEventCard(false);
       setShowNoResults(true);
     }
   };
@@ -285,8 +288,8 @@ const Form = () => {
     try {
       console.log("Performing Fetching of Artist Data!");
 
-      const flaskApi = "http://localhost:3000";
-      const artistDetailsurl = `${flaskApi}/api/artistdetails?id=${eventId}`;
+      const nodeapi = "https://server-dot-webtech-hw-8.wl.r.appspot.com";
+      const artistDetailsurl = `/api/artistdetails?id=${eventId}`;
       fetch(artistDetailsurl, {
         method: "GET",
         mode: "cors",
@@ -310,12 +313,13 @@ const Form = () => {
                 popularity: item.popularity || null,
                 followers: item.followers || null,
                 spotifyLink: item.spotifyLink,
-                albums: item.albums || []
-              }
-          })
-        }
+                albums: item.albums || [],
+              };
+            }),
+          };
           console.log(
-            "Successfully received response from /api/artistdetails!");
+            "Successfully received response from /api/artistdetails!"
+          );
           setArtistDetailsResponse(newArtistDetailsResponse);
         })
         .catch((err) => {
@@ -332,16 +336,21 @@ const Form = () => {
 
   const handleSelectEvent = async (
     eventId: string | null,
-    eventName: string | null
+    eventName: string | null,
+    eventDate: string | null
   ) => {
-    setEventCardData({ eventId: eventId, eventName: eventName });
+    setEventCardData({
+      eventId: eventId,
+      eventName: eventName,
+      eventDate: eventDate,
+    });
     console.log("Clicked on a particular event!");
 
     // We set the showTable state as false and showNoResults state as true. So that only NoResults component is visible
-    const flaskApi = "http://localhost:3000";
+    const nodeapi = "https://server-dot-webtech-hw-8.wl.r.appspot.com";
     let venue: any = null;
     try {
-      const eventDetailsurl = `${flaskApi}/api/eventdetails?id=${eventId}`;
+      const eventDetailsurl = `/api/eventdetails?id=${eventId}`;
       const eventDetailsResponse = await fetch(eventDetailsurl, {
         method: "GET",
         mode: "cors",
@@ -403,7 +412,7 @@ const Form = () => {
     try {
       const encodedVenueName = encodeURIComponent(JSON.stringify(venue));
 
-      const venueDetailsurl = `${flaskApi}/api/venuedetails?venue=${encodedVenueName}`;
+      const venueDetailsurl = `/api/venuedetails?venue=${encodedVenueName}`;
       const venueDetailsResponse = await fetch(venueDetailsurl, {
         method: "GET",
         mode: "cors",
@@ -470,7 +479,7 @@ const Form = () => {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-xl-6 col-lg-8 col-md-10 col-12">
+        <div className="col-xl-6 col-lg-8 col-md-10 col-12 mx-auto text-center">
           <div className="search-container">
             <h1>Events Search</h1>
             <hr
@@ -492,6 +501,7 @@ const Form = () => {
                   freeSolo
                   id="keyword"
                   options={dropDown}
+                  disableClearable={true}
                   value={eventSearch.keyword}
                   onChange={(event, value) => {
                     if (value) {
