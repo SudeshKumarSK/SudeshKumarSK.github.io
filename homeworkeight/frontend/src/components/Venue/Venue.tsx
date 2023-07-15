@@ -4,6 +4,7 @@ import { AiFillFacebook } from "react-icons/ai";
 import { GoChevronDown, GoChevronUp } from "react-icons/go";
 import { useState } from "react";
 import MapModal from "../MapModal";
+
 // Declaring the VenueDetails prop.
 interface VenueDetails {
   address: {
